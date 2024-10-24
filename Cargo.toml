@@ -1,0 +1,23 @@
+[package]
+name = "h-rocksdb"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7.7"
+axum-macros = "0.4.2"
+serde = { version = "1.0.210", features = ["derive"] }
+serde_json = "1.0.128"
+# rocksdb = "0.22.0"
+tokio = { version = "1.40.0", features = ["full"] }
+
+[dependencies.rocksdb]
+version = "0.22.0"
+default-features = false
+features = ["lz4"]
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+opt-level = 3
