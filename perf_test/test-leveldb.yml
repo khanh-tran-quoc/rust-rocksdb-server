@@ -1,0 +1,19 @@
+config:
+  target: http://localhost:7005
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: Test
+  http:
+    timeout: 30000
+  processor: "./leveldb.js"
+scenarios:
+  - flow:
+      - loop:
+          - post:
+              url: "/"
+              headers:
+                Content-Type: "text/plain"
+              beforeRequest: beforeRequest
+              body: "{{ requestBody }}"
+        count: 1

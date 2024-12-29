@@ -1,44 +1,32 @@
 use axum::extract::DefaultBodyLimit;
 use axum::routing::post;
 use axum::Router;
-use opentelemetry::KeyValue;
-use opentelemetry_otlp::ExportConfig;
-use opentelemetry_otlp::Protocol;
-use opentelemetry_otlp::WithExportConfig;
-use opentelemetry_sdk::metrics::reader::DefaultTemporalitySelector;
-use opentelemetry_sdk::trace::RandomIdGenerator;
-use opentelemetry_sdk::trace::Sampler;
-use opentelemetry_sdk::Resource;
+
 use rocksdb::DB;
+
 use std::env;
 use std::process;
 use std::sync::Arc;
 use std::time::Duration;
+
 use tokio::runtime::Builder;
 
-use opentelemetry::global::ObjectSafeSpan;
-use opentelemetry::trace::{SpanKind, Status};
-use opentelemetry::{global, trace::Tracer};
+use opentelemetry::global;
+use opentelemetry::KeyValue;
+use opentelemetry_otlp::Protocol;
+use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::propagation::TraceContextPropagator;
-use opentelemetry_sdk::trace::TracerProvider;
+use opentelemetry_sdk::trace::RandomIdGenerator;
+use opentelemetry_sdk::trace::Sampler;
 use opentelemetry_sdk::trace::{self};
-use opentelemetry_stdout::SpanExporter;
+use opentelemetry_sdk::Resource;
 
-use once_cell::sync::Lazy;
 mod controller;
 mod response;
 mod service;
 
 fn init_tracer() {
     global::set_text_map_propagator(TraceContextPropagator::new());
-
-    // Setup tracerprovider with stdout exporter
-    // that prints the spans to stdout.
-    // let provider = TracerProvider::builder()
-    //     .with_simple_exporter(SpanExporter::default())
-    //     .build();
-
-    // global::set_tracer_provider(provider);
 
     let tracer_provider = opentelemetry_otlp::new_pipeline()
         .tracing()

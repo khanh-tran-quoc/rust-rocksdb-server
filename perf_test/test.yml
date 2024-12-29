@@ -1,0 +1,17 @@
+config:
+  target: http://127.0.0.1:4000
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: Test
+  http:
+    timeout: 20000
+  processor: "./processor.js"
+scenarios:
+  - flow:
+      - loop:
+          - post:
+              url: "/"
+              beforeRequest: beforeRequest
+              body: "{{ requestBody }}"
+        count: 1
