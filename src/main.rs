@@ -1,15 +1,12 @@
 use axum::extract::DefaultBodyLimit;
 use axum::routing::post;
 use axum::Router;
+use h_rocksdb::{api::handlers, AppState};
 use rocksdb::DB;
 use std::env;
 use std::process;
 use std::sync::Arc;
 use tokio::runtime::Builder;
-
-mod controller;
-mod response;
-mod service;
 
 fn init_tracer() {
     // Simplified tracer initialization - can be enhanced later
@@ -34,10 +31,6 @@ fn get_db_path() -> String {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct AppState {
-    rocksdb: Arc<DB>,
-}
 
 fn main() {
     let rocksdb_path = get_db_path();
@@ -57,8 +50,8 @@ fn main() {
         init_tracer();
 
         let app = Router::new()
-            .route("/put", post(controller::put))
-            .route("/get", post(controller::get))
+            .route("/put", post(handlers::put))
+            .route("/get", post(handlers::get))
             .layer(DefaultBodyLimit::max(200000000))
             .with_state(state);
 

@@ -1,9 +1,7 @@
 use crate::{
-    response,
-    service::{
-        self,
-        otel::{current_span, extract_context_from_request},
-    },
+    api::response,
+    storage::rocksdb,
+    telemetry::tracing::{current_span, extract_context_from_request},
     AppState,
 };
 use axum::{
@@ -36,7 +34,7 @@ pub async fn put(
     let mut span = current_span(parent_cx);
     span.set_attribute(opentelemetry::KeyValue::new("key", query.key.clone()));
 
-    let result = service::db::put(&state.rocksdb, &query.key, &value);
+    let result = rocksdb::put(&state.rocksdb, &query.key, &value);
     match result {
         Ok(_) => {
             let message = format!("put key \"{}\" successfully", &query.key);
@@ -61,7 +59,7 @@ pub async fn get(
     let mut span = current_span(parent_cx);
     span.set_attribute(opentelemetry::KeyValue::new("key", query.key.clone()));
 
-    let result = service::db::get(&state.rocksdb, &query.key);
+    let result = rocksdb::get(&state.rocksdb, &query.key);
     match result {
         Ok(value) => match value {
             Some(value) => {

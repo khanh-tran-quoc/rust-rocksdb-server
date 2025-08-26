@@ -1,4 +1,4 @@
-use h_rocksdb::service::db::{get, put};
+use h_rocksdb::storage::rocksdb::{get, put};
 use rocksdb::{Options, DB};
 use tempfile::TempDir;
 
