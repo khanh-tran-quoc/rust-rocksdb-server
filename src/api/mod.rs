@@ -1,5 +1,5 @@
 //! API Layer
-//! 
+//!
 //! This module contains all HTTP-related functionality including:
 //! - Request handlers
 //! - Response formatting

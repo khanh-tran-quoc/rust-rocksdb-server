@@ -31,7 +31,6 @@ fn get_db_path() -> String {
     }
 }
 
-
 fn main() {
     let rocksdb_path = get_db_path();
     let db = DB::open_default(rocksdb_path).unwrap();
