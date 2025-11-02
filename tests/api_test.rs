@@ -93,7 +93,9 @@ async fn test_get_endpoint_existing_key() {
     let get_response = app.oneshot(get_request).await.unwrap();
     assert_eq!(get_response.status(), StatusCode::OK);
 
-    let body = to_bytes(get_response.into_body(), usize::MAX).await.unwrap();
+    let body = to_bytes(get_response.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let body_str = String::from_utf8(body.to_vec()).unwrap();
     assert!(body_str.contains("test_value"));
 }
@@ -156,7 +158,9 @@ async fn test_put_empty_value() {
     let get_response = app.oneshot(get_request).await.unwrap();
     assert_eq!(get_response.status(), StatusCode::OK);
 
-    let body = to_bytes(get_response.into_body(), usize::MAX).await.unwrap();
+    let body = to_bytes(get_response.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let body_str = String::from_utf8(body.to_vec()).unwrap();
     assert_eq!(body_str, "\"\"");
 }
@@ -197,7 +201,9 @@ async fn test_put_overwrite_value() {
     let get_response = app.oneshot(get_request).await.unwrap();
     assert_eq!(get_response.status(), StatusCode::OK);
 
-    let body = to_bytes(get_response.into_body(), usize::MAX).await.unwrap();
+    let body = to_bytes(get_response.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let body_str = String::from_utf8(body.to_vec()).unwrap();
     assert!(body_str.contains("new_value"));
 }
@@ -230,7 +236,9 @@ async fn test_unicode_key_and_value() {
     let get_response = app.oneshot(get_request).await.unwrap();
     assert_eq!(get_response.status(), StatusCode::OK);
 
-    let body = to_bytes(get_response.into_body(), usize::MAX).await.unwrap();
+    let body = to_bytes(get_response.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let body_str = String::from_utf8(body.to_vec()).unwrap();
     assert!(body_str.contains("unicode_test_value"));
 }
@@ -261,7 +269,9 @@ async fn test_large_value() {
     let get_response = app.oneshot(get_request).await.unwrap();
     assert_eq!(get_response.status(), StatusCode::OK);
 
-    let body = to_bytes(get_response.into_body(), usize::MAX).await.unwrap();
+    let body = to_bytes(get_response.into_body(), usize::MAX)
+        .await
+        .unwrap();
     let body_str = String::from_utf8(body.to_vec()).unwrap();
     assert_eq!(body_str.trim_matches('"').len(), large_value.len());
 }
@@ -270,11 +280,7 @@ async fn test_large_value() {
 async fn test_multiple_operations() {
     let (app, _temp_dir) = create_test_app();
 
-    let test_data = vec![
-        ("key1", "value1"),
-        ("key2", "value2"),
-        ("key3", "value3"),
-    ];
+    let test_data = vec![("key1", "value1"), ("key2", "value2"), ("key3", "value3")];
 
     // Put all values
     for (key, value) in &test_data {
@@ -300,7 +306,9 @@ async fn test_multiple_operations() {
         let get_response = app.clone().oneshot(get_request).await.unwrap();
         assert_eq!(get_response.status(), StatusCode::OK);
 
-        let body = to_bytes(get_response.into_body(), usize::MAX).await.unwrap();
+        let body = to_bytes(get_response.into_body(), usize::MAX)
+            .await
+            .unwrap();
         let body_str = String::from_utf8(body.to_vec()).unwrap();
         assert!(body_str.contains(expected_value));
     }

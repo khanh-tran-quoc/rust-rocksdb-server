@@ -848,7 +848,6 @@ dependencies = [
  "prost",
  "reqwest",
  "thiserror",
- "tonic",
  "tracing",
 ]
 

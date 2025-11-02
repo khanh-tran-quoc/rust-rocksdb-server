@@ -31,7 +31,7 @@ pub async fn put(
     value: String,
 ) -> Response {
     let parent_cx = extract_context_from_request(&headers);
-    let mut span = current_span(parent_cx);
+    let mut span = current_span(parent_cx, "rocksdb.http.put");
     span.set_attribute(opentelemetry::KeyValue::new("key", query.key.clone()));
 
     let result = rocksdb::put(&state.rocksdb, &query.key, &value);
@@ -56,7 +56,7 @@ pub async fn get(
     headers: HeaderMap,
 ) -> Response {
     let parent_cx = extract_context_from_request(&headers);
-    let mut span = current_span(parent_cx);
+    let mut span = current_span(parent_cx, "rocksdb.http.get");
     span.set_attribute(opentelemetry::KeyValue::new("key", query.key.clone()));
 
     let result = rocksdb::get(&state.rocksdb, &query.key);

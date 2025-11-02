@@ -5,11 +5,11 @@ use tempfile::TempDir;
 fn create_test_db() -> (DB, TempDir) {
     let temp_dir = TempDir::new().expect("Failed to create temp directory");
     let path = temp_dir.path();
-    
+
     let mut opts = Options::default();
     opts.create_if_missing(true);
     let db = DB::open(&opts, path).expect("Failed to open test database");
-    
+
     (db, temp_dir)
 }
 
@@ -18,7 +18,7 @@ fn test_put_success() {
     let (db, _temp_dir) = create_test_db();
     let key = String::from("test_key");
     let value = String::from("test_value");
-    
+
     let result = put(&db, &key, &value);
     assert!(result.is_ok(), "Put operation should succeed");
 }
@@ -30,14 +30,17 @@ fn test_get_existing_key() {
     let value = String::from("test_value");
 
     // First put the value
-    db
-        .put(key.as_bytes(), value.as_bytes())
+    db.put(key.as_bytes(), value.as_bytes())
         .expect("Direct put should succeed");
 
     // Then get it using our function
     let result = get(&db, &key);
     assert!(result.is_ok(), "Get operation should succeed");
-    assert_eq!(result.unwrap(), Some(value), "Should retrieve the correct value");
+    assert_eq!(
+        result.unwrap(),
+        Some(value),
+        "Should retrieve the correct value"
+    );
 }
 
 #[test]
@@ -46,8 +49,15 @@ fn test_get_non_existing_key() {
     let key = String::from("non_existing_key");
 
     let result = get(&db, &key);
-    assert!(result.is_ok(), "Get operation should succeed even for non-existing key");
-    assert_eq!(result.unwrap(), None, "Should return None for non-existing key");
+    assert!(
+        result.is_ok(),
+        "Get operation should succeed even for non-existing key"
+    );
+    assert_eq!(
+        result.unwrap(),
+        None,
+        "Should return None for non-existing key"
+    );
 }
 
 #[test]
@@ -63,7 +73,11 @@ fn test_put_and_get_integration() {
     // Get the value back
     let get_result = get(&db, &key);
     assert!(get_result.is_ok(), "Get operation should succeed");
-    assert_eq!(get_result.unwrap(), Some(value), "Should retrieve the same value that was put");
+    assert_eq!(
+        get_result.unwrap(),
+        Some(value),
+        "Should retrieve the same value that was put"
+    );
 }
 
 #[test]
@@ -77,7 +91,11 @@ fn test_put_empty_value() {
 
     let get_result = get(&db, &key);
     assert!(get_result.is_ok(), "Should be able to get empty value");
-    assert_eq!(get_result.unwrap(), Some(value), "Empty value should be preserved");
+    assert_eq!(
+        get_result.unwrap(),
+        Some(value),
+        "Empty value should be preserved"
+    );
 }
 
 #[test]
@@ -98,7 +116,11 @@ fn test_put_overwrite_existing_key() {
     // Verify the value was overwritten
     let get_result = get(&db, &key);
     assert!(get_result.is_ok(), "Get should succeed");
-    assert_eq!(get_result.unwrap(), Some(value2), "Should get the new value after overwrite");
+    assert_eq!(
+        get_result.unwrap(),
+        Some(value2),
+        "Should get the new value after overwrite"
+    );
 }
 
 #[test]
@@ -108,11 +130,21 @@ fn test_unicode_key_value() {
     let value = String::from("世界🌍");
 
     let put_result = put(&db, &key, &value);
-    assert!(put_result.is_ok(), "Should handle Unicode characters in put");
+    assert!(
+        put_result.is_ok(),
+        "Should handle Unicode characters in put"
+    );
 
     let get_result = get(&db, &key);
-    assert!(get_result.is_ok(), "Should handle Unicode characters in get");
-    assert_eq!(get_result.unwrap(), Some(value), "Unicode values should be preserved");
+    assert!(
+        get_result.is_ok(),
+        "Should handle Unicode characters in get"
+    );
+    assert_eq!(
+        get_result.unwrap(),
+        Some(value),
+        "Unicode values should be preserved"
+    );
 }
 
 #[test]
@@ -126,17 +158,17 @@ fn test_large_value() {
 
     let get_result = get(&db, &key);
     assert!(get_result.is_ok(), "Should retrieve large values");
-    assert_eq!(get_result.unwrap(), Some(value), "Large value should be preserved");
+    assert_eq!(
+        get_result.unwrap(),
+        Some(value),
+        "Large value should be preserved"
+    );
 }
 
 #[test]
 fn test_multiple_keys() {
     let (db, _temp_dir) = create_test_db();
-    let test_data = vec![
-        ("key1", "value1"),
-        ("key2", "value2"),
-        ("key3", "value3"),
-    ];
+    let test_data = vec![("key1", "value1"), ("key2", "value2"), ("key3", "value3")];
 
     // Put all values
     for (key, value) in &test_data {
